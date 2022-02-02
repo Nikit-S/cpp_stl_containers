@@ -250,37 +250,6 @@ void resize_ch()
 	for (int i=0;i<myvector1.size();i++)
 		std::cout << ' ' << myvector1[i];
 	std::cout << '\n';
-	
-	
-	ft::Vector<int> vct;
-	int _ratio = 1000;
-    ft::Vector<int> v;
-    vct.assign(9900 * _ratio, 1);
-    vct.resize(5000 * _ratio);
-    vct.reserve(5000 * _ratio);
-    v.push_back(vct.size());
-    v.push_back(vct.capacity());
-    vct.resize(7000 * _ratio);
-    v.push_back(vct.size());
-    v.push_back(vct.capacity());
-    vct.resize(15300 * _ratio, int());
-    v.push_back(vct.size());
-    v.push_back(vct.capacity());
-    v.push_back(vct[65]);
-	std::cout << "vct contains:";
-	int il = 0;
-	for (ft::Vector<int>::iterator it = vct.begin(); it!=vct.end(); ++it)
-	{
-		if (il % 921 == 0)
-			std::cout << ' ' <<  *it;
-		il++;
-	}
-	std::cout << '\n';
-	
-	std::cout << "vct1 contains:";
-	for (ft::Vector<int>::iterator it = v.begin(); it!=v.end(); ++it)
-		std::cout << ' ' << *it;
-	std::cout << '\n';
 
 }
 
@@ -548,21 +517,6 @@ void insert_ch()
 	for (it=myvector.begin(); it<myvector.end(); it++)
 		std::cout << ' ' << *it;
 	std::cout << '\n';
-	
-	ft::Vector<int> *vector = new ft::Vector<int>;
-	vector->assign(1500, 1);
-	//std::cout << "val of it: " << *(vector.insert(vector.end() - 800, 44)) << std::endl;
-	ft::Vector<int>::iterator::pointer testpt =  vector->insert(vector->end() - 800, 44).base();
-	std::cout << "--VECTOR-- contains:";
-	for (it=vector->begin(); it<vector->end(); it++)
-	{
-		if (testpt == it.base())
-			std::cout << *it << " address is true ";
-		std::cout << ' ' << *it;
-	}
-	std::cout << '\n';
-	delete vector;
-	//while (1);
 }
 
 void erase_ch()
@@ -722,5 +676,4 @@ int main()
 	testAllocator();
 	testNonMember();
 }
-
 

@@ -1,0 +1,55 @@
+
+------!!! iterator_traits_fun() !!!------
+
+------iterator_traits_ch()------
+int* is a random-access iterator
+int* difference_type is ptrdiff_t
+int* value_type is T
+int* value_type is T*
+int* value_type is T&
+
+------const_iterator_traits_ch()------
+int* is a random-access iterator
+int* difference_type is ptrdiff_t
+int* value_type is const int
+int* value_type is const int *
+int* value_type is const int &
+
+------!!! enable_if_fun() !!!------
+
+------enable_if_ch()------
+i is odd: true
+i is even: false
+
+------!!! equal_lexi_fun() !!!------
+
+------equal_ch()------
+The contents of both sequences are equal.
+The contents of both sequences differ.
+
+------lexi_ch()------
+Comparing foo and bar lexicographically (foo<bar):
+Using default comparison (operator<): true
+Using mycomp as comparison object: false
+
+------!!! pairs_fun() !!!------
+
+------MemberFun()------
+
+------constfun()------
+The price of lightbulbs is $0.99
+The price of shoes is $39.9
+The price of tomatoes is $2.3
+
+------operator_equal_ch()------
+Home planet: Earth
+Planet size: 6371
+
+------NonMemberFun()------
+foo and bar are not equal
+foo is less than bar
+foo is less than or equal to bar
+
+------makepairfun()------
+foo: 10, 20
+bar: 10, 65
