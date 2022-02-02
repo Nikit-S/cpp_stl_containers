@@ -309,10 +309,12 @@ namespace ft
 			return iterator(first);
 		}
 		
-		iterator insert(iterator pos, const T& value){
+		iterator insert(iterator pos, const T& value)
+		{
 			size_type index = pos - begin();
 
-			if (_size == _capacity){
+			if (_size == _capacity)
+			{
 				size_type new_cap = (_capacity == 0) ? _capacity + 1 : _capacity * 2;
 				value_type *newAlloc = _alloc.allocate(new_cap);
 				for (size_type i = 0; i < (_size - index); i++)
@@ -331,8 +333,11 @@ namespace ft
 
 				_data = newAlloc;
 				_capacity = new_cap;
-			}else{
-				for (size_type i = _size; i > index; i--){
+			}
+			else
+			{
+				for (size_type i = _size; i > index; i--)
+				{
 					_alloc.destroy(_data + i);
 					_alloc.construct(_data + i, *(_data + i -1));
 				}
@@ -345,10 +350,12 @@ namespace ft
 		}
 
 
-		void insert(iterator pos, size_type count, const T& value){
+		void insert(iterator pos, size_type count, const T& value)
+		{
 			size_type index = pos - begin();
 
-			if (_size + count > _capacity){
+			if (_size + count > _capacity)
+			{
 				size_type new_cap = (_capacity * 2 >= _size + count ) ? _capacity * 2 : _size + count;
 				value_type *newAlloc = _alloc.allocate(new_cap);
 
@@ -365,12 +372,15 @@ namespace ft
 
 				_data = newAlloc;
 				_capacity = new_cap;
-			}else{
-				for (size_type i = _size; i > index; i--){
+			}else
+			{
+				for (size_type i = _size; i > index; i--)
+				{
 					_alloc.destroy(_data + i + count - 1);
 					_alloc.construct(_data + i + count - 1, _data[i -1]);
 				}
-				for (size_type i = index; i < index + count; i++){
+				for (size_type i = index; i < index + count; i++)
+				{
 					_alloc.destroy(_data + i);
 					_alloc.construct(_data + i, value);
 				}
@@ -380,7 +390,8 @@ namespace ft
 
 		template< class InputIt >
 		void insert(iterator pos, InputIt first, InputIt last,
-			typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = NULL){
+			typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = NULL)
+			{
 
 			size_type index = pos - begin();
 			size_type count = last - first;
@@ -388,7 +399,8 @@ namespace ft
 			value_type *newAlloc;
 			size_type new_cap = (_capacity * 2 >= _size + count) ? _capacity * 2 : _size + count;
 
-			try{
+			try
+			{
 				if (_size + count > _capacity) {
 					newAlloc = _alloc.allocate(new_cap);
 
@@ -409,8 +421,11 @@ namespace ft
 
 					_data = newAlloc;
 					_capacity = new_cap;
-				} else {
-					for (size_type i = _size; i > index; i--) {
+				}
+				else
+				{
+					for (size_type i = _size; i > index; i--)
+					{
 						_alloc.destroy(_data + i + count - 1);
 						_alloc.construct(_data + i + count - 1, _data[i - 1]);
 					}
@@ -421,7 +436,9 @@ namespace ft
 					}
 				}
 				_size += count;
-			}catch(...) {
+			}
+			catch(...)
+			{
 				for(size_type i = 0; i < count; i++)
 					_alloc.destroy(newAlloc + i +index);
 				_alloc.deallocate(newAlloc, new_cap);
