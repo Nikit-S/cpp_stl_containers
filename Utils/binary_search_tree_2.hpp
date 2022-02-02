@@ -9,12 +9,6 @@
 #include "bst_iterator.hpp"
 
 
-enum Color
-{
-	BLACK,
-	RED
-};
-
 template <class T>
 class Node
 {
@@ -24,24 +18,24 @@ class Node
 		Node 			*right;
 		Node 			*parent;
 		T 		val;
-		int 			color;
+		int 			height; 
 	
 	public:
 	
 	
 
 
-	Node(): left(NULL), right(NULL), parent(NULL), val(), color(BLACK){}
+	Node(): left(NULL), right(NULL), parent(NULL), val(), height(1){}
 	
-	Node(const T &data) : left(NULL), right(NULL), val(data), color(BLACK) {}
+	Node(const T &data) : left(NULL), right(NULL), val(data), height(1) {}
 
-	Node(const T &val, Node *left, Node *right, Node *parent, int color)
-		: left(left), right(right), parent(parent), val(val), color(color){}
+	Node(const T &val, Node *left, Node *right, Node *parent)
+		: left(left), right(right), parent(parent), val(val), height(1){}
 
 	~Node(){};
 
 	Node(const Node &other)
-		: left(other.left), right(other.right), parent(other.parent), val(other.val),  color(other.color){}
+		: left(other.left), right(other.right), parent(other.parent), val(other.val), height(other.height) {}
 
 	Node& operator=(const Node &other)
 	{
@@ -51,7 +45,7 @@ class Node
 		right = other.right;
 		parent = other.parent;
 		val = other.val;
-		color = other.color;
+		height = other.height;
 		return *this;
 		
 	}
@@ -112,7 +106,6 @@ class Tree
 			alloc.destroy(root);
 			alloc.deallocate(root, 1);
 			size--;
-			root = nil;
 		}
 		
 		iterator lower_bound(const Pair& key)
@@ -219,100 +212,161 @@ class Tree
 			deepCopy(other.root, other.nil);
 			return *this;
 		}
-		
-		void deepCopy(pointer rootPtr, pointer nilPtr){
-		if (rootPtr != nilPtr){
-			insert(rootPtr->val);
-			deepCopy(rootPtr->right, nilPtr);
-			deepCopy(rootPtr->left, nilPtr);
-		}
-	}
-		
-		bool insert( const Pair& par ) {
-			
-			pointer newNode = alloc.allocate(1);
-			alloc.construct(newNode, Node(par, nil, nil, NULL, RED));
 
-			pointer y = nil;
-			pointer x = this->root;
-			while (x != nil) {
-				y = x;
-				if (comp(newNode->val, x->val))
-					x = x->left;
-				else if (comp(x->val, newNode->val))
-					x = x->right;
-				else{
+		void deepCopy(pointer rootPtr, pointer nilPtr)
+		{
+			if (rootPtr != nilPtr)
+			{
+				insert(rootPtr->val);
+				deepCopy(rootPtr->right, nilPtr);
+				deepCopy(rootPtr->left, nilPtr);
+			}
+		}
+		
+		bool insert (iterator position, const Pair& value)
+		{
+			(void) position;
+			return insert(value->first);
+		}
+		
+		bool insert (const Pair& value)
+		{
+			pointer newNode = alloc.allocate(1);
+			alloc.construct(newNode, Node(value, nil, nil, NULL));
+			
+			pointer tmp = root;
+			pointer saver = NULL;
+			
+			//std::cout << "Value: " << tmp->val << std::endl;
+			//std::cout << "gona insert" << std::endl;
+			
+			while (tmp != nil)
+			{
+				//std::cout << "in cycle" << std::endl;
+				//std::cout << comp(value, saver->val) << std::endl;
+				
+				saver = tmp;
+				if (comp(tmp->val, value))
+					tmp = tmp->right;
+				else if (comp(value, tmp->val))
+					tmp = tmp->left;
+				else
+				{
+					//std::cout << "everything is a lie" << std::endl;
+					
 					alloc.destroy(newNode);
 					alloc.deallocate(newNode, 1);
-					return false;
+					return (false);
 				}
 			}
-
-			newNode->parent = y;
-
-			if (y == nil)
+			
+			
+			//std::cout << "gona insert" << std::endl;
+			if (tmp == root)
+			{
+				//std::cout << "saver == root" << std::endl;
 				root = newNode;
-			else if (comp(newNode->val, y->val))
-				y->left = newNode;
-			else
-				y->right = newNode;
-
-			size++;
-
-			if (newNode->parent == nil) {
-				newNode->color = BLACK;
-				return true;
+				saver = nil;
 			}
-
-			if (newNode->parent->parent == nil)
-				return true;
-
+			else if (comp(saver->val, value))
+			{
+				//std::cout << comp(value, saver->val) << std::endl;
+				saver->right = newNode;
+			}
+			else if (comp(value, saver->val))
+			{
+				//std::cout << comp(value, saver->val) << std::endl;
+				saver->left = newNode;
+				
+			}
+			newNode->parent = saver;
+			
+			//std::cout << "Value: " << newNode->val << " Left: " << newNode->left->val << " Right: " << newNode->right->val << " Parent: " << newNode->parent->val << std::endl;
+			if (saver != nil)
+			{
+				std::cout << "lh: " << saver->left->height << " rh: " << saver->right->height << " now ";
+				saver->height = 1 + std::max(saver->left->height, saver->right->height);
+				std::cout << saver->val.first << " h: " << saver->height << std::endl;
+			}
 			fixInsertion(newNode);
-			return  true;
+			size++;
+			return (true);
 		}
 		
-		void fixInsertion(pointer node){
-		pointer uncle;
-		while (node->parent->color == RED){
-			if (node->parent == node->parent->parent->right) {
-				uncle = node->parent->parent->left;
-				if (uncle->color == RED) {
-					uncle->color = BLACK;
-					node->parent->color = BLACK;
-					node->parent->parent->color = RED;
-					node = node->parent->parent;
-				} else {
-					if (node == node->parent->left){
-						node = node->parent;
-						rightRotate(node);
-					}
-					node->parent->color = BLACK;
-					node->parent->parent->color = RED;
-					leftRotate(node->parent->parent);
-				}
-			} else{
-				uncle = node->parent->parent->right;
-				if (uncle->color == RED){
-					uncle->color = BLACK;
-					node->parent->color = BLACK;
-					node->parent->parent->color = RED;
-					node = node->parent->parent;
-				}else{
-					if (node == node->parent->right){
-						node = node->parent;
-						leftRotate(node);
-					}
-					node->parent->color = BLACK;
-					node->parent->parent->color = RED;
-					rightRotate(node->parent->parent);
-				}
+		int getBalance(pointer N)
+		{
+			if (N == nil)
+				return 0;
+			return N->left->height - N->right->height;
+		}
+		
+		void fixInsertion(pointer node)
+		{
+			int balance = getBalance(node);
+				if (balance > 1 && comp(node->val, node->left->val))
+					rightRotate(node);
+
+			// Right Right Case
+			if (balance < -1 && comp(node->val, node->right->val))
+					leftRotate(node);
+
+			// Left Right Case
+			if (balance > 1 && comp(node->left->val, node->val))
+			{
+				leftRotate(node->left);
+				rightRotate(node);
 			}
-			if (node == root)
-				break;
+
+			// Right Left Case
+			if (balance < -1 && comp(node->right->val, node->val))
+			{
+				rightRotate(node->right);
+				leftRotate(node);
+			}
+			
 		}
-		root->color = BLACK;
-	}
 		
+		void leftRotate(pointer x)
+		{			
+			pointer y = x->right;
+			pointer t2 = y->left;
+
+			// Perform rotation
+			y->left = x;
+			if(x != nil)
+				x->parent = y;
+			x->right = t2;
+			if(t2 != nil)
+				t2->parent = x;
+
+			// Update heights
+			y->height = std::max(y->left->height,
+					y->right->height) + 1;
+			x->height = std::max(x->left->height,
+					x->right->height) + 1;
+
+	// Return new root
+		}
+
+		void rightRotate(pointer y)
+		{
+			
+			pointer x = y->left;
+			pointer t2 = x->right;
+
+			// Perform rotation
+			x->right = y;
+			if(y != nil)
+				y->parent = x;
+			y->left = t2;
+			if(t2 != nil)
+				t2->parent = x;
+			
+			y->height = std::max(y->left->height,
+					y->right->height) + 1;
+			x->height = std::max(x->left->height,
+					x->right->height) + 1;
+		}
 		
 		ft::pair<int, pointer> count_children(pointer & pt)
 		{
@@ -328,126 +382,77 @@ class Tree
 				
 		}
 		
+		bool erase (iterator position)
+		{
+			pointer tmp = position.base();
+			if (tmp == nil)
+				return false;
+			return(erase(tmp));
+		}
+		
+		bool erase(Key const &key)
+		{
+			pointer tmp = find(ft::make_pair(key, T()));
+			if (tmp == nil)
+				return false;
+			return (erase(tmp));
+			
+		}
 		
 		
-		bool erase(const Pair &key){
-			pointer node = root;
-			pointer x, y, z;
-			z = nil;
-
-			while (node != nil){
-				if (comp(node->val, key))
-					node = node->right;
-				else if (comp(key, node->val))
-					node = node->left;
-				else {
-					z = node;
+		
+		
+		bool erase(pointer const &pt)
+		{
+			pointer tmp = pt;
+			pointer tmp_clr = pt;
+			if (tmp == nil)
+				return false;
+			ft::pair<int, pointer> pr = count_children(tmp);
+			switch (pr.first)
+			{
+				case 0:
+				{
+					if (tmp->parent->left == tmp)
+						tmp->parent->left = nil;
+					else
+						tmp->parent->right = nil;
+					pr.second->parent = tmp->parent;
+					break;
+					
+				}
+				case 1:
+				{
+					replace(tmp, pr.second);
+					break;
+				}
+				case 3:
+				{
+					leftparent(pr.second);
+					replace(tmp, getMin(pr.second));
+					
+					pr.second->left = tmp_clr->left;
+					pr.second->right = tmp_clr->right;
+					pr.second->left->parent = pr.second->left == nil ? nil : pr.second;
+					pr.second->right->parent = pr.second->right == nil ? nil : pr.second;
 					break;
 				}
 			}
-
-			if (z == nil)
-				return false;
-
-			y = z;
-			int originalColor = y->color;
-
-			if (y->left == nil){
-				x = z->right;
-				replace(z, z->right);
-			}else if (z->right == nil){
-				x = z->left;
-				replace(z, z->left);
-			}else{
-				y = getMin(z->right);
-				originalColor = y->color;
-				x = y->right;
-
-				if (y->parent == z)
-					x->parent = y;
-				else{
-					replace(y, y->right);
-					y->right = z->right;
-					y->right->parent = y;
-				}
-
-				replace(z, y);
-				y->left = z->left;
-				y->left->parent = y;
-				y->color = z->color;
-			}
-
-			alloc.destroy(z);
-			alloc.deallocate(z, 1);
-
-			if(originalColor == BLACK)
-				fixDeletion(x);
-
+			
+			alloc.destroy(tmp_clr);
+			alloc.deallocate(tmp_clr, 1);
 			size--;
+			if (size == 0)
+				root = nil;
 			return true;
 		}
 		
-		void fixDeletion(pointer node){
-		pointer sibling;
-
-		while (node != root && node->color == BLACK){
-			if (node == node->parent->left){
-				sibling = node->parent->right;
-				if (sibling->color == RED){
-					sibling->color = BLACK;
-					node->parent->color = RED;
-					leftRotate(node->parent);
-					sibling = node->parent->right;
-				}
-				if (sibling->left->color == BLACK && sibling->right->color == BLACK){
-					sibling->color = RED;
-					node = node->parent;
-				}else{
-					if (sibling->right->color == BLACK){
-						sibling->left->color = BLACK;
-						sibling->color = RED;
-						rightRotate(sibling);
-						sibling = node->parent->right;
-					}
-					sibling->color = node->parent->color;
-					node->parent->color = BLACK;
-					sibling->right->color = BLACK;
-					leftRotate(node->parent);
-					node = root;
-				}
-			}else{
-				sibling = node->parent->left;
-				if (sibling->color == RED){
-					sibling->color = BLACK;
-					node->parent->color = RED;
-					rightRotate(node->parent);
-					sibling = node->parent->left;
-				}
-
-				if (sibling->right->color == BLACK && sibling->right->color == BLACK){
-					sibling->color = RED;
-					node = node->parent;
-				}else{
-					if (sibling->left->color == BLACK){
-						sibling->right->color = BLACK;
-						sibling->color = RED;
-						leftRotate(sibling);
-						sibling = node->parent->left;
-					}
-
-					sibling->color = node->parent->color;
-					node->parent->color = BLACK;
-					sibling->left->color = BLACK;
-					rightRotate(node->parent);
-					node = root;
-				}
-
-			}
+		void fixDeletion(pointer node)
+		{
+			
 		}
-		node->color = BLACK;
-	}
 		
-		/*void leftparent(pointer p)
+		void leftparent(pointer p)
 		{
 			if (p->parent == nil)
 				return;
@@ -455,58 +460,25 @@ class Tree
 				p->parent->left = nil;
 			else if (p->parent->right == p)
 				p->parent->right = nil;
-			std::cout 
+			/*std::cout 
 			<< "-r:" << p->parent->right->val.second
 			<< " -l:" << p->parent->left->val.second
-			<< std::endl;
-		}*/
+			<< std::endl;*/
+		}
 		
-		void leftRotate(pointer x){
-		pointer  y = x->right;
+		void replace (pointer p1, pointer p2)
+		{
+			if (p1->parent == nil)
+			{
+				root = p2;
+			}
+			else if (p1 == p1->parent->left)
+				p1->parent->left = p2;
+			else
+				p1->parent->right = p2;
 
-		x->right = y->left;
-		if (y->left != nil)
-			y->left->parent = x;
-		y->parent = x->parent;
-		if (x->parent == nil)
-			this->root = y;
-		else if (x == x->parent->left)
-			x->parent->left = y;
-		else
-			x->parent->right = y;
-
-		y->left = x;
-		x->parent = y;
-	}
-
-	void rightRotate(pointer x){
-		pointer  y = x->left;
-
-		x->left = y->right;
-		if (y->right != nil)
-			y->right->parent = x;
-		y->parent = x->parent;
-		if (x->parent == nil)
-			this->root = y;
-		else if (x == x->parent->right)
-			x->parent->right = y;
-		else
-			x->parent->left = y;
-
-		y->right = x;
-		x->parent = y;
-	}
-
-	void replace(pointer x, pointer y){
-		if (x->parent == nil)
-			root = y;
-		else if (x == x->parent->left)
-			x->parent->left = y;
-		else
-			x->parent->right = y;
-
-		y->parent = x->parent;
-	}
+			p2->parent = p1->parent;
+		}
 		
 		pointer getMin(pointer node)
 		{

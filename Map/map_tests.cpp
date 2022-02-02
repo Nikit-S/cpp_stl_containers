@@ -44,17 +44,23 @@ int constructors ()
 int copyop ()
 {
 	ft::map<char,int> first;
-	ft::map<char,int> second;
+	ft::map<char,int> *second = new ft::map<char,int>;
 
 	first['x']=8;
 	first['y']=16;
 	first['z']=32;
 
-	second=first; // second now contains 3 ints
+	*second=first; // second now contains 3 ints
 	first=ft::map<char,int>();	// and first is now empty
 
 	std::cout << "Size of first: " << first.size() << '\n';
-	std::cout << "Size of second: " << second.size() << '\n';
+	std::cout << "Size of second: " << second->size() << '\n';
+	ft::map<char,int> *third = new ft::map<char,int>;
+	*third = *second;
+	delete second;
+	std::cout << "Size of third: " << third->size() << '\n';
+	std::cout << "'x': " << (*third)['x'] << '\n';
+	delete third;
 	return 0;
 }
 
@@ -327,6 +333,36 @@ int insert_ch ()
 	for (it=anothermap.begin(); it!=anothermap.end(); ++it)
 		std::cout << it->first << " => " << it->second << '\n';
 	
+	ft::map<int, char> mp;
+	typedef ft::pair<int,char> par;
+	
+	int arr[] = {3, 2, 1, 0};
+	
+	mp.insert(par(arr[0], arr[0] + 'A'));
+	std::cout << "MYYmap contains:\n";
+	for (ft::map<int,char>::iterator it=mp.begin(); it!=mp.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+		
+	mp.insert(par(arr[1], arr[1] + 'A'));
+	std::cout << "MYYmap contains:\n";
+	for (ft::map<int,char>::iterator it=mp.begin(); it!=mp.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+	
+	mp.insert(par(arr[2], arr[3] + 'A'));
+	std::cout << "MYYmap contains:\n";
+	for (ft::map<int,char>::iterator it=mp.begin(); it!=mp.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+	
+	
+	ft::map<int,int> mpa;
+	int i[] = {2, 5, 8, 10, 15, 12, 18, 20, 30, 25, 22, 27, 35, 32, 31, 40, 0};
+	for (int l =0; i[l] != 0; l++ )
+		mpa[i[l]] = i[l];
+	
+	
+	std::cout << "mpa contains:\n";
+	for (ft::map<int,int>::iterator it=mpa.begin(); it!=mpa.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
 	return 0;
 }
 
@@ -355,6 +391,25 @@ int erase_ch ()
 	for (it=mymap.begin(); it!=mymap.end(); ++it)
 		std::cout << it->first << " => " << it->second << '\n';
 
+
+	ft::map<int,int> mp;
+	int i[] = {20, 10, 30, 5, 15, 25, 35, 2, 8, 12, 18, 22, 27, 32, 40, 31, 0};
+	for (int l =0; i[l] != 0; l++ )
+		mp[i[l]] = i[l];
+	
+	
+	std::cout << "MYYmap contains:\n";
+	for (ft::map<int,int>::iterator it=mp.begin(); it!=mp.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+		
+	
+	mp.erase(27);
+	mp.erase(22);
+	//mp.erase(25);
+	std::cout << "MYYmap contains:\n";
+	for (ft::map<int,int>::iterator it=mp.begin(); it!=mp.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+	
 	return 0;
 }
 
@@ -644,28 +699,13 @@ void AllocatorFun()
 
 int main ()
 {
-	ft::map<int, char> mp;
-	typedef ft::pair<int,char> par;
-	
-	int arr[] = {20, 15, 25 , 14, 18, 24, 27, 13 ,17, 19, 23, 26, 28, 29, 30, 31, 32, 33, 34, 0};
-	
-	for (int i = 0; arr[i] != 0; i++ )
-		mp.insert(par(arr[i], arr[i] + 'A'));
-	
-	
-	
-	std::cout << "mymap contains:\n";
-	for (ft::map<int,char>::iterator it=mp.begin(); it!=mp.end(); ++it)
-		std::cout << it->first << " => " << it->second << '\n';
-	
-	
-	/*MemberFun();
+	MemberFun();
 	IteratorFun();
 	CapacityFun();
 	ElemacFun();
 	ModifiersFun();
 	ObserversFun();
 	OperationsFun();
-	AllocatorFun();*/
+	AllocatorFun();
 	return (0);
 }

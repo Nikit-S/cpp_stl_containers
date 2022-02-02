@@ -97,40 +97,24 @@ namespace ft
 				const_reverse_iterator		rend() const {return	_tree.rend(); }
 				
 				
-			pair<iterator,bool> insert (const value_type& val)
-			{
-				bool isInserted = _tree.insert(val);
-				return ft::make_pair(find(val.first), isInserted);
+			ft::pair<iterator, bool> insert( const value_type& value ) {
+			bool isInserted = _tree.insert(value);
+			return ft::make_pair(find(value.first), isInserted);
+		}
+
+		template< class InputIt >
+		void insert( InputIt first, InputIt last ){
+			while (first != last){
+				insert(*first);
+				first++;
 			}
-			
-			/*iterator insert (iterator position, const value_type& val)
-			{
-				bool isInserted = _tree.insert(position, val);
-				return find(val.first);
-			}*/
-			
-			iterator insert(iterator hint, const value_type& value){
+		}
+
+		iterator insert(iterator hint, const value_type& value){
 			(void)hint;
 			insert(value);
 			return find(value.first);
 		}
-			
-			template <class InputIterator>
-			void insert (InputIterator first, InputIterator last)
-			{
-				while (first != last)
-				{
-					//std::cout << last.base() << std::endl;	
-					//std::cout << first.base() << std::endl;
-					insert(*first);
-					//std::cout << first.base() << std::endl;
-					
-					first++;
-					//std::cout << first.base() << std::endl;
-					
-				}
-					
-			}
 			
 			iterator find(const key_type &key)
 			{
@@ -162,14 +146,14 @@ namespace ft
 				return _tree.max_size();
 			}
 			
-			void erase (iterator position)
+			bool erase(iterator position)
 			{
-				_tree.erase(position);
+				return(_tree.erase(*position));
 			}
 			
-			size_type erase (const key_type& k)
+			bool erase(const Key &key)
 			{
-				return _tree.erase(k);
+				return(_tree.erase(ft::make_pair(key, mapped_type())));
 			}
 
 			void erase (iterator first, iterator last)
@@ -180,7 +164,7 @@ namespace ft
 					tmp++;
 					//std::cout << "deleting: ";
 					//std::cout << first->second;
-					_tree.erase(first);
+					_tree.erase(*first);
 					//std::cout << " deleted" << std::endl;
 					first = tmp;
 					//std::cout << "incremented: " << first->second << std::endl;
