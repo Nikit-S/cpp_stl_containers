@@ -47,11 +47,11 @@ namespace ft
 		//constructors//
 		public:
 		//default
-		explicit Vector (const allocator_type& alloc = allocator_type()):
+		explicit Vector (const allocator_type& alloc= allocator_type()):
 		_data(NULL), _size(0), _capacity(0), _alloc(alloc){}
 		
 		//fill
-		explicit Vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()):
+		explicit Vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc= allocator_type()):
 		_size(n), _capacity(n), _alloc(alloc)
 		{
 			_data = _alloc.allocate(n);
@@ -62,7 +62,7 @@ namespace ft
 		
 		//range
 		template <class InputIterator>
-		Vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+		Vector (InputIterator first, InputIterator last, const allocator_type& alloc= allocator_type(),
 		typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0):
 		_size(last - first),
 		_capacity(last - first),
@@ -309,93 +309,125 @@ namespace ft
 			return iterator(first);
 		}
 		
-		iterator insert (iterator position, const value_type& val)
-		{
-			size_type index_take = position - begin();
-			insert(position, 1, val);
-			return begin() + index_take;
-		}
-		
-		void insert (iterator position, size_type n, const value_type& val)
-		{	
-			size_type index_take = position - begin();
-			size_type _old_capcity = _capacity;
-			value_type* _temp_data;
-			if (n > _capacity - _size)
-			{
-				if (_size + n > _size * 2)
-				{
-					_temp_data = _alloc.allocate(n + _size);
-					_capacity = n + _size;
+		iterator insert(iterator pos, const T& value){
+			size_type index = pos - begin();
+
+			if (_size == _capacity){
+				size_type new_cap = (_capacity == 0) ? _capacity + 1 : _capacity * 2;
+				value_type *newAlloc = _alloc.allocate(new_cap);
+				for (size_type i = 0; i < (_size - index); i++)
+					_alloc.construct(newAlloc + i, _data[i]);
+
+				_alloc.construct(newAlloc + index, value);
+
+				for (size_type i = index + 1; i <= _size; i++)
+					_alloc.construct(newAlloc + i, _data[i - 1]);
+
+				for (size_type i = 0; i < _size; i++)
+					_alloc.destroy(&_data[i]);
+
+
+				_alloc.deallocate(_data, _capacity);
+
+				_data = newAlloc;
+				_capacity = new_cap;
+			}else{
+				for (size_type i = _size; i > index; i--){
+					_alloc.destroy(_data + i);
+					_alloc.construct(_data + i, *(_data + i -1));
 				}
-				else if (_size + n <= _size * 2)
-				{
-					_temp_data = _alloc.allocate(_size * 2);
-					_capacity = _size * 2;
-				}
+				_alloc.destroy(_data + index);
+				_alloc.construct(_data + index, value);
 			}
-			else
-				_temp_data = _alloc.allocate(_capacity);
-			size_type i = 0;
-			
-			
-			for (; i < index_take; i++)
-				_alloc.construct(_temp_data + i, _data[i]);
-			
-			
-			for (; i < n + index_take; i++)
-				_alloc.construct(_temp_data + i, val);
-			
-			
-			for (; i < _size + n; i++)
-				_alloc.construct(_temp_data + i, _data[i - n]);
-			
-			
-			_alloc.deallocate(_data, _old_capcity);
-			_data = _temp_data;
-			
-			_size += n;
+
+			_size++;
+			return begin() + index;
 		}
 
-		
+
+		void insert(iterator pos, size_type count, const T& value){
+			size_type index = pos - begin();
+
+			if (_size + count > _capacity){
+				size_type new_cap = (_capacity * 2 >= _size + count ) ? _capacity * 2 : _size + count;
+				value_type *newAlloc = _alloc.allocate(new_cap);
+
+				for (size_type i = 0; i < (_size - index); i++)
+					_alloc.construct(newAlloc + i, _data[i]);
+				for (size_type i = 0; i < count; i++)
+					_alloc.construct(newAlloc + index + i, value);
+				for (size_type i = index; i < _size; i++)
+					_alloc.construct(newAlloc + i + count, _data[i]);
+				for (size_type i = 0; i < _size; i++)
+					_alloc.destroy(_data + i);
+				if (_data)
+					_alloc.deallocate(_data, _capacity);
+
+				_data = newAlloc;
+				_capacity = new_cap;
+			}else{
+				for (size_type i = _size; i > index; i--){
+					_alloc.destroy(_data + i + count - 1);
+					_alloc.construct(_data + i + count - 1, _data[i -1]);
+				}
+				for (size_type i = index; i < index + count; i++){
+					_alloc.destroy(_data + i);
+					_alloc.construct(_data + i, value);
+				}
+			}
+			_size += count;
+		}
+
 		template< class InputIt >
-		void insert(iterator position, InputIt first, InputIt last,
-			typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = NULL)
-		{
-			size_type index_take = position - begin();
-			size_type _old_capcity = _capacity;
-			value_type* _temp_data;
-			size_type n = last - first;
-			if (n > _capacity - _size)
-			{
-				if (_size + n > _size * 2)
-				{
-					_temp_data = _alloc.allocate(n + _size);
-					_capacity = n + _size;
+		void insert(iterator pos, InputIt first, InputIt last,
+			typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = NULL){
+
+			size_type index = pos - begin();
+			size_type count = last - first;
+
+			value_type *newAlloc;
+			size_type new_cap = (_capacity * 2 >= _size + count) ? _capacity * 2 : _size + count;
+
+			try{
+				if (_size + count > _capacity) {
+					newAlloc = _alloc.allocate(new_cap);
+
+					for (size_type i = 0; i < (_size - index); i++)
+						_alloc.construct(newAlloc + i, _data[i]);
+
+					for (size_type i = 0; i < count; i++) {
+						_alloc.construct(newAlloc + index + i, *(first));
+						first++;
+					}
+					for (size_type i = index; i < _size; i++)
+						_alloc.construct(newAlloc + i + count, _data[i]);
+
+					for (size_type i = 0; i < _size; i++)
+						_alloc.destroy(_data + i);
+					if (_data)
+						_alloc.deallocate(_data, _capacity);
+
+					_data = newAlloc;
+					_capacity = new_cap;
+				} else {
+					for (size_type i = _size; i > index; i--) {
+						_alloc.destroy(_data + i + count - 1);
+						_alloc.construct(_data + i + count - 1, _data[i - 1]);
+					}
+					for (size_type i = index; i < index + count; i++) {
+						_alloc.destroy(_data + i);
+						_alloc.construct(_data + i, *first);
+						first++;
+					}
 				}
-				else if (_size + n <= _size * 2)
-				{
-					_temp_data = _alloc.allocate(_size * 2);
-					_capacity = _size * 2;
-				}
+				_size += count;
+			}catch(...) {
+				for(size_type i = 0; i < count; i++)
+					_alloc.destroy(newAlloc + i +index);
+				_alloc.deallocate(newAlloc, new_cap);
+				throw;
 			}
-			else
-				_temp_data = _alloc.allocate(_capacity);
-				
-			size_type i = 0;
-			for (; i < index_take; i++)
-				_alloc.construct(_temp_data + i, _data[i]);
-			for (; i < n + index_take; i++)
-			{
-				_alloc.construct(_temp_data + i, *first);
-				first++;
-			}
-			for (; i < _size + n; i++)
-				_alloc.construct(_temp_data + i, _data[i - n]);
-			_alloc.deallocate(_data, _old_capcity);
-			_data = _temp_data;
-			
-			_size += n;
+
 		}
 
 		
