@@ -228,7 +228,7 @@ namespace ft{
 
 		template< class Key, class Compare, class Alloc >
 		bool operator==(const ft::Set<Key,Compare,Alloc>& lhs, const ft::Set<Key,Compare,Alloc>& rhs ){
-			return (lhs.getSize() == rhs.getSize() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+			return (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 		}
 
 		template< class Key, class Compare, class Alloc >
