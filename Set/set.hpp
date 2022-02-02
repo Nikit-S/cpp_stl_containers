@@ -5,7 +5,7 @@
 
 namespace ft{
 	template< class Key, class Compare = std::less<Key>, class Allocator = std::allocator<Key> >
-	class set{
+	class Set{
 
 
 			/* * * * * * * * * * * * * * *
@@ -48,13 +48,13 @@ namespace ft{
 
 	public:
 
-		explicit set(const Compare& comp = key_compare(), const Allocator& alloc = Allocator())
+		explicit Set(const Compare& comp = key_compare(), const Allocator& alloc = Allocator())
 		: _tree(), _alloc(alloc), _compare(comp){
 
 		}
 
 		template< class InputIt >
-		set(InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()){
+		Set(InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()){
 			_alloc = alloc;
 			_compare = comp;
 			while (first != last) {
@@ -63,13 +63,13 @@ namespace ft{
 			}
 		}
 
-		set(const set& other){
+		Set(const Set& other){
 			*this = other;
 		}
 
-		~set(){}
+		~Set(){}
 
-		set& operator=(const set& other){
+		Set& operator=(const Set& other){
 			if (this == &other)
 				return *this;
 
@@ -160,7 +160,7 @@ namespace ft{
 			return _tree.erase(key);
 		}
 
-		void swap(set& other){
+		void swap(Set& other){
 			_tree.swap(other._tree);
 		}
 
@@ -227,37 +227,37 @@ namespace ft{
 			* * * * * * * * * * * * * * * * */
 
 		template< class Key, class Compare, class Alloc >
-		bool operator==(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator==(const ft::Set<Key,Compare,Alloc>& lhs, const ft::Set<Key,Compare,Alloc>& rhs ){
 			return (lhs.getSize() == rhs.getSize() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 		}
 
 		template< class Key, class Compare, class Alloc >
-		bool operator!=(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator!=(const ft::Set<Key,Compare,Alloc>& lhs, const ft::Set<Key,Compare,Alloc>& rhs ){
 			return !(lhs == rhs);
 		}
 
 		template< class Key, class Compare, class Alloc >
-		bool operator<(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator<(const ft::Set<Key,Compare,Alloc>& lhs, const ft::Set<Key,Compare,Alloc>& rhs ){
 			return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 		}
 
 		template< class Key, class Compare, class Alloc >
-		bool operator<=(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator<=(const ft::Set<Key,Compare,Alloc>& lhs, const ft::Set<Key,Compare,Alloc>& rhs ){
 			return !(rhs < lhs);
 		}
 
 		template< class Key, class Compare, class Alloc >
-		bool operator>(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator>(const ft::Set<Key,Compare,Alloc>& lhs, const ft::Set<Key,Compare,Alloc>& rhs ){
 			return rhs < lhs;
 
 		}
 		template< class Key, class Compare, class Alloc >
-		bool operator>=(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator>=(const ft::Set<Key,Compare,Alloc>& lhs, const ft::Set<Key,Compare,Alloc>& rhs ){
 			return !(rhs > lhs);
 		}
 
 		template< class Key, class Compare, class Alloc >
-		void swap(ft::set<Key,Compare,Alloc>& lhs, ft::set<Key,Compare,Alloc>& rhs ){
+		void swap(ft::Set<Key,Compare,Alloc>& lhs, ft::Set<Key,Compare,Alloc>& rhs ){
 			lhs.swap(rhs);
 		}
 }
