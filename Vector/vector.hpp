@@ -171,23 +171,6 @@ namespace ft
 			_size = n;
 		}
 		
-		/*void resize (size_type count, value_type val = value_type()){
-			if (_size > count){
-				for (size_type i = count; i > _size; i++)
-					_alloc.destroy(_data + i);
-				_size = count;
-			}else if (_size < count){
-				if (_capacity < count) {
-					size_type new_cap = (_capacity * 2 > count) ? _capacity * 2 : count;
-					reserve(new_cap);
-					}
-				for (size_type i = _size; i < count; i++) {
-					_alloc.construct(_data + i, val);
-					_size++;
-				}
-			}
-		}*/
-		
 		size_type capacity() const
 		{
 			return (_capacity);
