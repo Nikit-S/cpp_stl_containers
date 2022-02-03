@@ -6,7 +6,7 @@
 namespace ft
 {
 	template< class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
-	class Map
+	class map
 	{
 		
 		public:
@@ -60,13 +60,13 @@ namespace ft
 		
 		public:
 		
-		explicit Map (const key_compare& comp = key_compare(),
+		explicit map (const key_compare& comp = key_compare(),
 		const allocator_type& alloc = allocator_type()):
 		_tree(), _alloc(alloc), _compare(comp), _value_compare(value_compare()) {}
 		
 		
 		template <class InputIterator>
-		Map (InputIterator first, InputIterator last,
+		map (InputIterator first, InputIterator last,
 		const key_compare& comp = key_compare(),
 		const allocator_type& alloc = allocator_type()):
 		_tree(), _alloc(alloc), _compare(comp), _value_compare(value_compare())
@@ -75,12 +75,12 @@ namespace ft
 				_tree.insert(*first);
 		}
 		
-		Map (const Map& x)
+		map (const map& x)
 		{
 			*this = x;
 		}
 		
-		Map& operator=(const Map& other)
+		map& operator=(const map& other)
 		{
 			if (this == &other)
 				return *this;
@@ -93,7 +93,7 @@ namespace ft
 		}
 		
 		
-		~Map(){}
+		~map(){}
 		
 		iterator					begin() {return	_tree.begin(); }
 		const_iterator 				begin() const {return	_tree.begin(); }
@@ -203,7 +203,7 @@ namespace ft
 			return value_compare();
 		}
 		
-		void swap (Map& x)
+		void swap (map& x)
 		{
 			_tree.swap(x._tree);
 		}
