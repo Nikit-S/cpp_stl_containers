@@ -5,7 +5,7 @@
 
 namespace ft
 {
-	template <class T, class Container = ft::Vector<T> >
+	template <class T, class Container = ft::vector<T> >
 	class stack
 	{
 		public:
