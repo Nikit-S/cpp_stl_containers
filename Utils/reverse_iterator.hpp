@@ -1,7 +1,7 @@
 #ifndef REV_IT
 #define REV_IT
 
-#include "iterator_traits.hpp"
+#include "utils.hpp"
 
 namespace ft{
 
@@ -10,9 +10,9 @@ namespace ft{
 	{
 
 
-		/* * * * * * * * * * * * * * *
-		* 		Member Types
-		* * * * * * * * * * * * * * */
+		/*/////////////////////////////
+				Member Types
+		////////////////////////////*/
 
 
 	public:

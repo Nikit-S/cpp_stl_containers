@@ -1,11 +1,60 @@
+#include <iterator>
+
 namespace ft
 {
+	
+		/*/////////////////////////////
+				Iterator traits
+		////////////////////////////*/
+		
+	template <class Iter> class iterator_traits
+	{
+		public:
+		typedef typename Iter::difference_type difference_type;
+		typedef typename Iter::value_type value_type;
+		typedef typename Iter::pointer pointer;
+		typedef typename Iter::reference reference;
+		typedef typename Iter::iterator_category iterator_category;
+	};
+
+	template <class T> class iterator_traits<T*>
+	{
+		public:
+		typedef std::ptrdiff_t difference_type;
+		typedef T value_type;
+		typedef T* pointer;
+		typedef T& reference;
+		typedef std::random_access_iterator_tag iterator_category;
+	};
+
+	template <class T> class iterator_traits<const T*>
+	{
+		public:
+		typedef std::ptrdiff_t difference_type;
+		typedef T value_type;
+		typedef const T* pointer;
+		typedef const T& reference;
+		typedef std::random_access_iterator_tag iterator_category;
+	};
+
+
+
+		/*/////////////////////////////
+				enable_if
+		////////////////////////////*/
+		
 	template<bool Cond, class T = void> struct enable_if {};
 	template<class T> struct enable_if<true, T>
 	{
 		typedef T type;
 	};
 	
+	
+	
+		/*/////////////////////////////
+				 is_integral
+		////////////////////////////*/
+		
 	template <class T, T v>
 	struct integral_constant
 	{
@@ -33,6 +82,12 @@ namespace ft
 	template <>        struct is_integral<long long>          : public true_type {};
 	template <>        struct is_integral<unsigned long long> : public true_type {};
 	
+	
+	
+		/*/////////////////////////////
+				 equal
+		////////////////////////////*/
+		
 	template <class InputIterator1, class InputIterator2>
 	bool equal ( InputIterator1 first1, InputIterator1   last1, InputIterator2 first2 ) {
 		while (first1 != last1) {
@@ -54,7 +109,13 @@ namespace ft
 		}
 		return true;
 	}
-	
+
+
+
+		/*/////////////////////////////
+			lexicographical_compare
+		////////////////////////////*/
+		
 	template <class InputIterator1, class InputIterator2>
 	bool lexicographical_compare (InputIterator1 first1,										InputIterator1 last1,
 								InputIterator2 first2, InputIterator2 last2)
@@ -89,7 +150,12 @@ namespace ft
 		}
 		return (first2!=last2);
 	}
-	
+
+
+		/*/////////////////////////////
+					pair
+		////////////////////////////*/
+
 	template< class T1, class T2>
 	struct pair{
 
