@@ -1,3 +1,6 @@
+#ifndef UTILS_HPP
+#define UTILS_GPP
+
 #include <iterator>
 
 namespace ft
@@ -7,14 +10,14 @@ namespace ft
 				Iterator traits
 		////////////////////////////*/
 		
-	template <class Iter> class iterator_traits
+	template <class Iterator> class iterator_traits
 	{
 		public:
-		typedef typename Iter::difference_type difference_type;
-		typedef typename Iter::value_type value_type;
-		typedef typename Iter::pointer pointer;
-		typedef typename Iter::reference reference;
-		typedef typename Iter::iterator_category iterator_category;
+		typedef typename Iterator::difference_type difference_type;
+		typedef typename Iterator::value_type value_type;
+		typedef typename Iterator::pointer pointer;
+		typedef typename Iterator::reference reference;
+		typedef typename Iterator::iterator_category iterator_category;
 	};
 
 	template <class T> class iterator_traits<T*>
@@ -231,3 +234,5 @@ namespace ft
 		return !(lhs < rhs);
 	}
 }
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef BSTI_HPP
+#define BSTI_GPP
+
 #include <stdlib.h>
 #include "../Utils/reverse_iterator.hpp"
 namespace ft
@@ -175,3 +178,5 @@ namespace ft
 		}
 	};
 }
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef RAI_HPP
+#define RAI_GPP
+
 #include <iterator>
 
 namespace ft
@@ -157,3 +160,5 @@ namespace ft
 		return (lrai.base() == rrai.base());
 	}
 }
+
+#endif

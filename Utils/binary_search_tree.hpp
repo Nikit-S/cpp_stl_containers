@@ -1,3 +1,5 @@
+#ifndef BST_HPP
+#define BST_GPP
 
 #include <iostream>
 #include <algorithm>
@@ -609,3 +611,5 @@ class Tree
 
 		
 };
+
+#endif
