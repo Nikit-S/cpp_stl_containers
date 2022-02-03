@@ -350,42 +350,45 @@ namespace ft
 		}
 
 
-		void insert(iterator pos, size_type count, const T& value)
-		{
-			size_type index = pos - begin();
-
-			if (_size + count > _capacity)
+		void insert (iterator position, size_type n, const value_type& val)
+		{	
+			size_type index_take = position - begin();
+			size_type _old_capcity = _capacity;
+			value_type* _temp_data;
+			if (n > _capacity - _size)
 			{
-				size_type new_cap = (_capacity * 2 >= _size + count ) ? _capacity * 2 : _size + count;
-				value_type *newAlloc = _alloc.allocate(new_cap);
-
-				for (size_type i = 0; i < (_size - index); i++)
-					_alloc.construct(newAlloc + i, _data[i]);
-				for (size_type i = 0; i < count; i++)
-					_alloc.construct(newAlloc + index + i, value);
-				for (size_type i = index; i < _size; i++)
-					_alloc.construct(newAlloc + i + count, _data[i]);
-				for (size_type i = 0; i < _size; i++)
-					_alloc.destroy(_data + i);
-				if (_data)
-					_alloc.deallocate(_data, _capacity);
-
-				_data = newAlloc;
-				_capacity = new_cap;
-			}else
-			{
-				for (size_type i = _size; i > index; i--)
+				if (_size + n > _size * 2)
 				{
-					_alloc.destroy(_data + i + count - 1);
-					_alloc.construct(_data + i + count - 1, _data[i -1]);
+					_temp_data = _alloc.allocate(n + _size);
+					_capacity = n + _size;
 				}
-				for (size_type i = index; i < index + count; i++)
+				else if (_size + n <= _size * 2)
 				{
-					_alloc.destroy(_data + i);
-					_alloc.construct(_data + i, value);
+					_temp_data = _alloc.allocate(_size * 2);
+					_capacity = _size * 2;
 				}
 			}
-			_size += count;
+			else
+				_temp_data = _alloc.allocate(_capacity);
+			size_type i = 0;
+			
+			
+			for (; i < index_take; i++)
+				_alloc.construct(_temp_data + i, _data[i]);
+			
+			
+			for (; i < n + index_take; i++)
+				_alloc.construct(_temp_data + i, val);
+			
+			
+			for (; i < _size + n; i++)
+				_alloc.construct(_temp_data + i, _data[i - n]);
+			
+			
+			_alloc.deallocate(_data, _old_capcity);
+			_data = _temp_data;
+			
+			_size += n;
 		}
 
 		template< class InputIt >
