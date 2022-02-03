@@ -123,8 +123,26 @@ int enable_if_ch() {
 	short int i = 1;		// code does not compile if type of i is not integral
 
 	std::cout << std::boolalpha;
-	std::cout << "i is odd: " << is_odd(i) << std::endl;
-	std::cout << "i is even: " << is_even(i) << std::endl;
+	std::cout << "is_integral:" << std::endl;
+	std::cout << "char: " << std::is_integral<char>::value << std::endl;
+	std::cout << "int: " << std::is_integral<int>::value << std::endl;
+	std::cout << "float: " << std::is_integral<float>::value << std::endl;
+	
+	std::cout << "<float>(): " << ft::is_integral<float>() << std::endl;
+	std::cout << "<int>(): " << ft::is_integral<int>() << std::endl;
+	std::cout << "<bool>(): " << ft::is_integral<bool>() << std::endl;
+	std::cout << "<char>(): " << ft::is_integral<char>() << std::endl;
+	std::cout << "<signed char>(): " << ft::is_integral<signed char>() << std::endl;
+	std::cout << "<unsigned char>(): " << ft::is_integral<unsigned char>() << std::endl;
+	std::cout << "<wchar_t>(): " << ft::is_integral<wchar_t>() << std::endl;
+	std::cout << "<char16_t>(): " << ft::is_integral<char16_t>() << std::endl;
+	std::cout << "<short>(): " << ft::is_integral<short>() << std::endl;
+	std::cout << "<unsigned short>(): " << ft::is_integral<unsigned short>() << std::endl;
+	std::cout << "<unsigned int>(): " << ft::is_integral<unsigned int>() << std::endl;
+	std::cout << "<long>(): " << ft::is_integral<long>() << std::endl;
+	std::cout << "<unsigned long>(): " << ft::is_integral<unsigned long>() << std::endl;
+	std::cout << "<long long>(): " << ft::is_integral<long long>() << std::endl;
+	std::cout << "<unsigned long long>(): " << ft::is_integral<unsigned long long>() << std::endl;
 
 	return 0;
 }
