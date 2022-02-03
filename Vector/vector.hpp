@@ -161,15 +161,32 @@ namespace ft
 			}
 			else if (n > _size)
 			{
-				if (n > _capacity && n > _size * 2)
+				if (n > _capacity && n > _size /*_capacity*/ * 2)
 					reserve(n);
-				else if (n > _capacity && n <= _size * 2)
-					reserve(_size * 2);
+				else if (n > _capacity && n <= _size /*_capacity*/ * 2)
+					reserve(_size /*_capacity*/ * 2);
 				for (size_type i = _size; i < n; i++)
 					_alloc.construct(_data + i, val);
 			}
 			_size = n;
 		}
+		
+		/*void resize (size_type count, value_type val = value_type()){
+			if (_size > count){
+				for (size_type i = count; i > _size; i++)
+					_alloc.destroy(_data + i);
+				_size = count;
+			}else if (_size < count){
+				if (_capacity < count) {
+					size_type new_cap = (_capacity * 2 > count) ? _capacity * 2 : count;
+					reserve(new_cap);
+					}
+				for (size_type i = _size; i < count; i++) {
+					_alloc.construct(_data + i, val);
+					_size++;
+				}
+			}
+		}*/
 		
 		size_type capacity() const
 		{

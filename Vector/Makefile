@@ -2,8 +2,8 @@ NAME = vector_tests.cpp
 
 all:
 	sed 's/ft::vector/std::vector/g' $(NAME) > ch_$(NAME)
-	clang++ -std=c++98 $(NAME) -o ft
-	clang++ -std=c++98 ch_$(NAME) -o std
+	clang++ -std=c++11 $(NAME) -o ft
+	clang++ -std=c++11 ch_$(NAME) -o std
 
 test: all
 	
