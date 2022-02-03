@@ -1,5 +1,5 @@
 #ifndef BSTI_HPP
-#define BSTI_GPP
+#define BSTI_HPP
 
 #include <stdlib.h>
 #include "../Utils/reverse_iterator.hpp"

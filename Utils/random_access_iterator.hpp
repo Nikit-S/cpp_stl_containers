@@ -1,5 +1,5 @@
 #ifndef RAI_HPP
-#define RAI_GPP
+#define RAI_HPP
 
 #include <iterator>
 

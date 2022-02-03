@@ -1,5 +1,5 @@
 #ifndef BST_HPP
-#define BST_GPP
+#define BST_HPP
 
 #include <iostream>
 #include <algorithm>
